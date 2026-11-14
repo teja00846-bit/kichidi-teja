@@ -1,0 +1,29 @@
+
+name: Extract KICHIDI Project
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: |
+          mkdir -p /tmp/kichidi
+          unzip -o kichidi-xauusd-project.zip -d /tmp/kichidi
+          cp -R /tmp/kichidi/kichidi-xauusd/. .
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md package.json wrangler.toml src .gitignore
+          git commit -m "Extract KICHIDI XAUUSD project" || echo "No changes"
+          git push
